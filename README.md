@@ -67,3 +67,5 @@ date +"%T.%3N" && ./runCds.sh
 
 You'll see three timestamps printed out.
 The difference between first and last one is the time-to-first response.
+
+On my machine, time-to-first-response is 2s 326ms without CDS and 1s 588ms with CDS.
