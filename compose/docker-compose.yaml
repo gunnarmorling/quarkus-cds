@@ -1,0 +1,17 @@
+version: '2.1'
+services:
+  todo-db:
+    image: postgres:11
+    ports:
+     - 5432:5432
+    environment:
+     - POSTGRES_USER=todouser
+     - POSTGRES_PASSWORD=todopw
+     - POSTGRES_DB=tododb
+    volumes:
+     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+     - my-network
+networks:
+  my-network:
+   name: cds-network
