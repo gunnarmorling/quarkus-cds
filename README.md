@@ -1,7 +1,8 @@
 # Quarkus with AppCDS
 
-Dynamic CDS Archives ([JEP 350](https://openjdk.java.net/jeps/350)) are a feature new in JDK 13 that allows to compile an archive of classes accessed by an application at system exit, which then can used for class-data sharing in future runs of the application.
-That way, classes are pre-verified and the archive file is memory-mapped, reduced in decreased start-up time.
+Dynamic CDS Archives ([JEP 350](https://openjdk.java.net/jeps/350)) are an improvement in JDK 13 that allows to archive the loaded application and library classes at application exit.
+The archive then can used for class-data sharing in future runs of the application.
+The archive file will memory-mapped, directly restoring class metadata, resulting in decreased start-up time.
 
 This project is an exploration for using CDS with Quarkus by measuring time-to-first-response without and with CDS, following the strategy described in the [Quarkus Performance Measurement Guide](https://quarkus.io/guides/performance-measure)
 
