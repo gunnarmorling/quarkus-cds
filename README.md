@@ -3,10 +3,7 @@
 Dynamic CDS Archives ([JEP 350](https://openjdk.java.net/jeps/350)) are a feature new in JDK 13 that allows to compile an archive of classes accessed by an application at system exit, which then can used for class-data sharing in future runs of the application.
 That way, classes are pre-verified and the archive file is memory-mapped, reduced in decreased start-up time.
 
-Creating and using CDS archives requires explicit --class-path arguments, i.e. the current Quarkus runner JAR with its classpath in the MANIFEST.MF cannot be used as is. This project is an exploration for using CDS with Quarkus by
-
-* Adjusting the runner JAR of a REST + CRUD application so it can be used with CDS
-* Measuring time-to-first-response without and with CDS, following the strategy described in the [Quarkus Performance Measurement Guide](https://quarkus.io/guides/performance-measure)
+This project is an exploration for using CDS with Quarkus by measuring time-to-first-response without and with CDS, following the strategy described in the [Quarkus Performance Measurement Guide](https://quarkus.io/guides/performance-measure)
 
 To learn more about CDS, refer to this in-depth [blog post](https://blog.codefx.org/java/application-class-data-sharing/).
 
@@ -36,26 +33,15 @@ Build the project:
 mvn clean package
 ```
 
-Create/update launcher shell scripts (optional, only needed when project dependencies have changed):
-
-```shell
-java CreateScripts.java
-```
-
-Patch runner JAR to remove its classpath entry from the manifest:
-
-```shell
-./patch-runner.sh
-```
-
 Create an app CDS archive:
 
 ```shell
 ./prepare-cds.sh
 ```
 
-Access localhost:8080/api and stop the Quarkus app.
+Access localhost:8080/api and stop the Quarkus app trigger load of all relevant classes.
 Observe the created/updated _target/app-cds.jsa_ file.
+The file should have a size of ~32 MB. When not invoking the endpoint, the class data archive will be much smaller.
 
 ## Run Measurements
 
