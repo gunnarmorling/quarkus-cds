@@ -24,6 +24,12 @@ cd compose
 docker-compose up
 ```
 
+Or this without Compose:
+
+```shell
+docker run -d -p 5432:5432 --name pgdemodb -v $(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql -e POSTGRES_USER=todouser -e POSTGRES_PASSWORD=todopw -e POSTGRES_DB=tododb postgres:11
+```
+
 Build the project:
 
 ```shell
@@ -69,3 +75,11 @@ You'll see three timestamps printed out.
 The difference between first and last one is the time-to-first response.
 
 On my machine, time-to-first-response is 2s 326ms without CDS and 1s 588ms with CDS.
+
+## Misc.
+
+Getting a shell in the database if needed:
+
+```shell
+docker run --tty --rm -i --network cds-network debezium/tooling bash -c 'pgcli postgresql://todouser:todopw@todo-db:5432/tododb'
+```
