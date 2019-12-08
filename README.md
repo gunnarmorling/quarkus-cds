@@ -55,7 +55,7 @@ Create an app CDS archive:
 ```
 
 Access localhost:8080/api and stop the Quarkus app.
-Observe the created/updated _app-cds.jsa_ file.
+Observe the created/updated _target/app-cds.jsa_ file.
 
 ## Run Measurements
 
@@ -74,7 +74,9 @@ date +"%T.%3N" && ./runCds.sh
 You'll see three timestamps printed out.
 The difference between first and last one is the time-to-first response.
 
-On my machine, time-to-first-response is 2s 326ms without CDS and 1s 588ms with CDS.
+On my machine, time-to-first-response is 2s326ms without CDS and 1s588ms with CDS.
+
+Check _target/classload.log_ and observe how dependency classes e.g. from Hibernate, Netty or Vert.x are loaded from "shared objects file (top)"; if you see them loaded from dependency JARs instead, something went wrong with either setting up or using the class data archive.
 
 ## Misc.
 
