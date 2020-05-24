@@ -10,7 +10,7 @@ To learn more about CDS, refer to this in-depth [blog post](https://blog.codefx.
 
 ## Prerequisites
 
-* Have Java 13 installed
+* Have Java 13 or newer installed
 * Have Docker Compose installed
 
 ## Preparation
@@ -31,6 +31,7 @@ docker run -d -p 5432:5432 --name pgdemodb -v $(pwd)/init.sql:/docker-entrypoint
 Build the project:
 
 ```shell
+cd quarkus-cds
 mvn clean package
 ```
 
@@ -40,7 +41,8 @@ Create an app CDS archive:
 ./prepare-cds.sh
 ```
 
-Access localhost:8080/api and stop the Quarkus app trigger load of all relevant classes.
+Access localhost:8080/api to trigger the loading of all relevant classes.
+Stop the Quarkus app.
 Observe the created/updated _target/app-cds.jsa_ file.
 The file should have a size of ~32 MB. When not invoking the endpoint, the class data archive will be much smaller.
 
@@ -55,7 +57,7 @@ while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/api)" != "20
 And in another one (use _gdate_ on mac os):
 
 ```shell
-date +"%T.%3N" && ./runCds.sh
+date +"%T.%3N" && ./run-cds.sh
 ```
 
 You'll see three timestamps printed out.
