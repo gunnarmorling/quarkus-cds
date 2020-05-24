@@ -5,13 +5,10 @@ import static org.hamcrest.CoreMatchers.is;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
-
-@QuarkusTest
-public class ExampleResourceTest {
+public class ExampleResourceAppCds {
 
     @Test
-    public void testGetAll() {
+    public void getAll() {
         given()
           .when().get("/api")
           .then()

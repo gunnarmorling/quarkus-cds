@@ -8,8 +8,8 @@
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>14</maven.compiler.source>
+    <maven.compiler.target>14</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus-plugin.version>1.4.2.Final</quarkus-plugin.version>
@@ -83,6 +83,55 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemProperties>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*AppCds.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.bazaarvoice.maven.plugins</groupId>
+        <artifactId>process-exec-maven-plugin</artifactId>
+        <version>0.9</version>
+        <executions>
+            <execution>
+              <id>app-cds-creation</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+              <configuration>
+                <name>quarkus-cds</name>
+                <healthcheckUrl>http://localhost:8080/</healthcheckUrl>
+                <arguments>
+                  <argument>java</argument>
+                  <argument>-XX:ArchiveClassesAtExit=app-cds.jsa</argument>
+                  <argument>-jar</argument>
+                  <argument>${project.build.directory}/quarkus-cds-${project.version}-runner.jar</argument>
+                </arguments>
+              </configuration>
+            </execution>
+            <execution>
+                <id>stop-all</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                    <goal>stop-all</goal>
+                </goals>
+            </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

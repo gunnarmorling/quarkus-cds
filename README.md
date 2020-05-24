@@ -10,7 +10,7 @@ To learn more about CDS, refer to this in-depth [blog post](https://blog.codefx.
 
 ## Prerequisites
 
-* Have Java 13 or newer installed
+* Have Java 14 or newer installed
 * Have Docker Compose installed
 
 ## Preparation
@@ -32,19 +32,14 @@ Build the project:
 
 ```shell
 cd quarkus-cds
-mvn clean package
+mvn clean verify
 ```
 
-Create an app CDS archive:
-
-```shell
-./prepare-cds.sh
-```
-
-Access localhost:8080/api to trigger the loading of all relevant classes.
-Stop the Quarkus app.
-Observe the created/updated _target/app-cds.jsa_ file.
-The file should have a size of ~32 MB. When not invoking the endpoint, the class data archive will be much smaller.
+As part of the build, an app CDS archive is created at _target/app-cds.jsa_.
+For that purpose, the Quarkus application is started in the `pre-integration-test` phase,
+then the API endpoint is invoked by means of a RESTAssured based test,
+triggering the loading of all relevant classes.
+The file should have a size of ~40 MB.
 
 ## Run Measurements
 
