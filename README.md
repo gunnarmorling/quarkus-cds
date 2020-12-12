@@ -10,7 +10,7 @@ To learn more about CDS, refer to this in-depth [blog post](https://blog.codefx.
 
 ## Prerequisites
 
-* Have Java 14 or newer installed
+* Have Java 15 or newer installed
 * Have Docker Compose installed
 
 ## Preparation
@@ -25,7 +25,7 @@ docker-compose up
 Or this without Compose:
 
 ```shell
-docker run -d -p 5432:5432 --name pgdemodb -v $(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql -e POSTGRES_USER=todouser -e POSTGRES_PASSWORD=todopw -e POSTGRES_DB=tododb postgres:11
+docker run -d -p 5432:5432 --name pgdemodb -v $(pwd)/compose/init.sql:/docker-entrypoint-initdb.d/init.sql -e POSTGRES_USER=todouser -e POSTGRES_PASSWORD=todopw -e POSTGRES_DB=tododb postgres:13
 ```
 
 Build the project:
