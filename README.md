@@ -1,5 +1,11 @@
 # Quarkus with AppCDS
 
+This example accompanies the blog post [Building Class Data Sharing Archives with Apache Maven](https://www.morling.dev/blog/building-class-data-sharing-archives-with-apache-maven/).
+Since the time of writing, Quarkus added built-in support for creating CDS archives by means of the `-Dquarkus.package.create-appcds=true` option,
+so the manual approach described here shouldn't be needed any longer for most cases.
+It is required though if you want to create modular runtime images for your application (using the _jlink_ tool),
+as the CDS archive needs be created using that jlink image.
+
 Dynamic CDS Archives ([JEP 350](https://openjdk.java.net/jeps/350)) are an improvement in JDK 13 that allows to archive the loaded application and library classes at application exit.
 The archive then can used for class-data sharing in future runs of the application.
 The archive file will memory-mapped, directly restoring class metadata, resulting in decreased start-up time.
