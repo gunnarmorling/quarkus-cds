@@ -134,7 +134,7 @@ $JAVA_HOME/bin/jlink --add-modules java.base,java.compiler,java.instrument,java.
 ```
 
 ```shell
-./target/runtime-image/bin/java -Xshare:dump -version
+mkdir target/runtime-image/cds
 ```
 
 Create the class list file:
