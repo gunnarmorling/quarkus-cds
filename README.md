@@ -69,3 +69,95 @@ Getting a shell in the database if needed:
 ```shell
 docker run --tty --rm -i --network cds-network debezium/tooling bash -c 'pgcli postgresql://todouser:todopw@todo-db:5432/tododb'
 ```
+
+## Creating a Modular Runtime Image with AppCDS Archive
+
+Obtain list of modules to include in the image:
+
+```shell
+jdeps --print-module-deps --multi-release 15 --ignore-missing-deps \
+  --module-path target/lib/jakarta.activation.jakarta.activation-api-1.2.1.jar:target/lib/org.reactivestreams.reactive-streams-1.0.3.jar:target/lib/org.jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec-2.0.0.Final.jar \
+  --class-path target/lib/* \
+target/todo-manager-1.0.0-SNAPSHOT-runner.jar
+```
+
+```shell
+$JAVA_HOME/bin/jlink --add-modules java.base,java.compiler,java.instrument,java.naming,java.rmi,java.security.jgss,java.security.sasl,java.sql,jdk.jconsole,jdk.unsupported \
+  --output target/runtime-image
+```
+
+```shell
+./target/runtime-image/bin/java -Xshare:dump -version
+```
+
+```shell
+mkdir target/runtime-image/cds
+
+./target/runtime-image/bin/java \
+  -XX:ArchiveClassesAtExit=target/runtime-image/cds/app-cds.jsa \
+  -jar target/todo-manager-1.0.0-SNAPSHOT-runner.jar
+```
+
+```shell
+./target/runtime-image/bin/java -Xshare:on \
+  -XX:SharedArchiveFile=target/runtime-image/cds/app-cds.jsa \
+  -jar target/todo-manager-1.0.0-SNAPSHOT-runner.jar
+```
+
+## Reproducer for Seg Fault with JDK 16
+
+Build:
+
+```shell
+cd quarkus-cds
+mvn clean verify -DskipTests=true -DskipITs=true
+```
+
+```shell
+java --version
+openjdk 16-ea 2021-03-16
+OpenJDK Runtime Environment (build 16-ea+27-1884)
+OpenJDK 64-Bit Server VM (build 16-ea+27-1884, mixed mode, sharing)
+```
+
+Create the runtime image:
+
+```shell
+$JAVA_HOME/bin/jlink --add-modules java.base,java.compiler,java.instrument,java.naming,java.rmi,java.security.jgss,java.security.sasl,java.sql,jdk.jconsole,jdk.unsupported \
+  --output target/runtime-image
+```
+
+```shell
+./target/runtime-image/bin/java -Xshare:dump -version
+```
+
+Create the class list file:
+
+```shell
+./target/runtime-image/bin/java -XX:DumpLoadedClassList=target/todo-manager-classlist.lst \
+  -jar target/todo-manager-1.0.0-SNAPSHOT-runner.jar
+
+Crtl + C
+```
+
+Observe the seg fault :)
+
+```shell
+./target/runtime-image/bin/java -Xshare:dump \
+  -XX:SharedClassListFile=target/todo-manager-classlist.lst \
+  -XX:SharedArchiveFile=target/runtime-image/cds/app-cds.jsa \
+  -jar target/todo-manager-1.0.0-SNAPSHOT-runner.jar
+```
+
+```shell
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x0000000109cdcc9c, pid=6375, tid=7427
+#
+# JRE version: OpenJDK Runtime Environment (16.0+27) (build 16-ea+27-1884)
+# Java VM: OpenJDK 64-Bit Server VM (16-ea+27-1884, interpreted mode, tiered, compressed oops, g1 gc, bsd-amd64)
+# Problematic frame:
+# V  [libjvm.dylib+0x2dcc9c]  ClassListParser::resolve_indy(Symbol*, Thread*)+0xcc
+#
+```
