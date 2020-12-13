@@ -1,4 +1,7 @@
 *
+!todo-manager.sh
+!todo-manager-appcds.sh
+!target/runtime-image/*
 !target/*.jsa
 !target/*-runner
 !target/*-runner.jar

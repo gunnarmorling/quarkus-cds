@@ -1,0 +1,25 @@
+####
+# This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
+#
+# Before building the docker image run:
+#
+# mvn package
+#
+# Then, build the image with:
+#
+# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/quarkus-cds-jvm .
+#
+# Then run the container using:
+#
+# docker run -i --rm -p 8080:8080 quarkus/quarkus-cds-jvm
+#
+###
+
+FROM registry.fedoraproject.org/fedora-minimal:33
+
+COPY target/runtime-image /opt/todo-manager/jdk
+COPY target/lib/* /opt/todo-manager/lib/
+COPY target/todo-manager-1.0.0-SNAPSHOT-runner.jar /opt/todo-manager
+COPY todo-manager-appcds.sh /opt/todo-manager
+
+ENTRYPOINT [ "/opt/todo-manager/todo-manager-appcds.sh" ]
